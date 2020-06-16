@@ -25,7 +25,7 @@ public interface MovieService {
 
     List<MovieDTO> getMoviesForHomepageByGenres(List<Genre> genres, Pageable pageable);
 
-    Metadata getSimilarMovies(String movieId,Pageable pageable);
+    Metadata<List<MovieDTO>> getSimilarMovies(String movieId,Pageable pageable);
 
     List<MovieDTO> getMoviesByGenre(Genre genre,Pageable pageable);
 }

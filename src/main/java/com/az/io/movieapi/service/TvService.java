@@ -26,7 +26,7 @@ public interface TvService {
 
     List<TvDTO> getTvsForHomepageByGenres(List<Genre> genres, Pageable pageable);
 
-    Metadata getSimilarTvs(String tvId, Pageable pageable);
+    Metadata<List<TvDTO>> getSimilarTvs(String tvId, Pageable pageable);
 
     List<TvDTO> getTvByGenre(Genre genre,Pageable pageable);
 }

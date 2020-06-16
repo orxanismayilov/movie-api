@@ -38,12 +38,12 @@ public class TvServiceImpl implements TvService {
 
     @Override
     public void addTv(Tv tv) {
-
+        repo.save(tv);
     }
 
     @Override
     public void addTvList(List<Tv> tvs) {
-
+        repo.saveAll(tvs);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class TvServiceImpl implements TvService {
     }
 
     @Override
-    public Metadata getSimilarTvs(String tvId, Pageable pageable) {
+    public Metadata<List<TvDTO>> getSimilarTvs(String tvId, Pageable pageable) {
         return null;
     }
 
