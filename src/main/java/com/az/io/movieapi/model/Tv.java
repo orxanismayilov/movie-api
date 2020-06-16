@@ -44,4 +44,18 @@ public class Tv {
             joinColumns = @JoinColumn(name = "tv_id"),
             inverseJoinColumns = @JoinColumn(name = "keyword_id"))
     private Set<Keyword> keywords;
+
+    @ManyToMany(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST,CascadeType.DETACH})
+    @JoinTable(
+            name = "tv_crew",
+            joinColumns = @JoinColumn(name = "tv_id"),
+            inverseJoinColumns = @JoinColumn(name = "crew_id"))
+    private Set<Crew> crew;
+
+    @ManyToMany(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST,CascadeType.DETACH})
+    @JoinTable(
+            name = "tv_cast",
+            joinColumns = @JoinColumn(name = "tv_id"),
+            inverseJoinColumns = @JoinColumn(name = "cast_id"))
+    private Set<Cast> cast;
 }

@@ -12,9 +12,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Metadata {
+public class Metadata<T> {
 
-    private List<MovieDTO> movies;
+    private T data;
     private String title;
     private String nextPage;
 }

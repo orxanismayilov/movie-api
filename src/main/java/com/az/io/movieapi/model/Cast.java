@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -24,4 +25,7 @@ public class Cast {
 
     @ManyToMany(mappedBy = "cast")
     private List<Movie> movie;
+
+    @ManyToMany(mappedBy = "cast")
+    private Set<Tv> tvs;
 }

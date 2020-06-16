@@ -25,10 +25,10 @@ public class MovieController {
     private final GenreService genreService;
 
     @GetMapping
-    public ResponseObject<Metadata> getMovies(Pageable pageable) {
+    public ResponseObject<Metadata<List<MovieDTO>>> getMovies(Pageable pageable) {
         List<MovieDTO> movieDTOS = movieService.getMoviesForHomepage(pageable);
-        return ResponseObject.getSuccessResponse(Metadata.builder()
-                .movies(movieDTOS)
+        return ResponseObject.getSuccessResponse(Metadata.<List<MovieDTO>>builder()
+                .data(movieDTOS)
                 .nextPage(LinkUtil.nextPageForMovies(pageable))
                 .build());
     }
@@ -40,11 +40,11 @@ public class MovieController {
 
 
     @GetMapping("/genres")
-    public ResponseObject<Metadata> getMoviesByGenre(@RequestParam List<String> genres,Pageable pageable) {
+    public ResponseObject<Metadata<List<MovieDTO>>> getMoviesByGenre(@RequestParam List<String> genres,Pageable pageable) {
         List<Genre> genreList=genres.stream().map(genreService::getGenreByName).collect(Collectors.toList());
-        return ResponseObject.getSuccessResponse(Metadata.builder()
+        return ResponseObject.getSuccessResponse(Metadata.<List<MovieDTO>>builder()
                 .nextPage(LinkUtil.nextPageMoviesByGenre(genres,pageable))
-                .movies(movieService.getMoviesForHomepageByGenres(genreList,pageable))
+                .data(movieService.getMoviesForHomepageByGenres(genreList,pageable))
                 .build());
     }
 

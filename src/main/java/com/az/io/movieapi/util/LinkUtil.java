@@ -1,6 +1,7 @@
 package com.az.io.movieapi.util;
 
 import com.az.io.movieapi.controller.MovieController;
+import com.az.io.movieapi.controller.TvController;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -32,6 +33,34 @@ public class LinkUtil {
     public static String nextPageSimilarMovies(String movieId,Pageable pageable) {
         StringBuilder link=new StringBuilder();
         link.append(linkTo(methodOn(MovieController.class).getSimilarMovies(movieId,pageable)))
+                .append("?page=").append(pageable.next().getPageNumber())
+                .append("&size=").append(pageable.getPageSize());
+        getPageableParams(link,pageable);
+        return link.toString();
+    }
+
+    public static String nextPageForTvs(Pageable pageable) {
+        StringBuilder link=new StringBuilder();
+        link.append(linkTo(methodOn(TvController.class).getTvs(pageable)))
+                .append("?page=").append(pageable.next().getPageNumber())
+                .append("&size=").append(pageable.getPageSize());
+        getPageableParams(link,pageable);
+        return link.toString();
+    }
+
+    public static String nextPageTvsByGenre(List<String> genreName, Pageable pageable) {
+        StringBuilder link=new StringBuilder();
+
+        link.append(linkTo(methodOn(TvController.class).getTvsByGenre(genreName,pageable)))
+                .append("&page=").append(pageable.next().getPageNumber())
+                .append("&size=").append(pageable.getPageSize());
+        getPageableParams(link,pageable);
+        return link.toString();
+    }
+
+    public static String nextPageSimilarTvs(String movieId,Pageable pageable) {
+        StringBuilder link=new StringBuilder();
+        link.append(linkTo(methodOn(TvController.class).getSimilarTvs(movieId,pageable)))
                 .append("?page=").append(pageable.next().getPageNumber())
                 .append("&size=").append(pageable.getPageSize());
         getPageableParams(link,pageable);
