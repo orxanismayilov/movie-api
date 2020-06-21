@@ -35,7 +35,7 @@ public class TvController {
     }
 
     @GetMapping("/{tvId}")
-    public ResponseObject<TvDetails> getMovieById(@PathVariable("tvId") String tvId) {
+    public ResponseObject<TvDetails> getTvById(@PathVariable("tvId") String tvId) {
         return ResponseObject.getSuccessResponse(service.getTvDetailsById(tvId));
     }
 

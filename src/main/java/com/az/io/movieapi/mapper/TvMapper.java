@@ -12,8 +12,8 @@ public class TvMapper {
         TvDTO tvDTO=new TvDTO();
         tvDTO.setId(projection.getImdbId());
         tvDTO.setImdbRating(projection.getImdbRating());
-        tvDTO.setLanguages(null);
-        tvDTO.setLink("");
+        tvDTO.setLanguages(projection.getEpisodes().get(0)
+                .getVideos().stream().map(TvVideoProjection::getLanguage).collect(Collectors.toList()));
         tvDTO.setPosterPath(projection.getPosterPath());
         return tvDTO;
     }

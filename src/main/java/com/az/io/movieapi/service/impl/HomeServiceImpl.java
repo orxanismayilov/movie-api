@@ -1,6 +1,7 @@
 package com.az.io.movieapi.service.impl;
 
 import com.az.io.movieapi.cache.CustomCacheManager;
+import com.az.io.movieapi.dto.MovieDTO;
 import com.az.io.movieapi.model.Genre;
 import com.az.io.movieapi.model.Metadata;
 import com.az.io.movieapi.service.HomeService;
@@ -30,15 +31,15 @@ public class HomeServiceImpl implements HomeService {
     private final CustomCacheManager cacheManager;
 
     @Override
-    public List<Metadata> getHomePage() {
+    public List<Metadata<List<MovieDTO>>> getHomePage() {
         if (!cacheManager.isExist("home") || cacheManager.isExpired()) {
             resetCache();
         }
-        return cacheManager.get("home");
+        return (List<Metadata<List<MovieDTO>>>) cacheManager.get("home");
     }
 
     public  void resetCache() {
-        List<Metadata> metadata = new ArrayList<>();
+        List<Metadata<List<MovieDTO>>> metadata = new ArrayList<>();
         metadata.add(getTrendingMovies());
         metadata.add(getLatestMovies());
         metadata.add(getActionAndAdventureMovies());
@@ -52,51 +53,53 @@ public class HomeServiceImpl implements HomeService {
         cacheManager.add("home",metadata);
     }
 
-    private Metadata getSciFiAndActionMovies() {
+    private Metadata<List<MovieDTO>> getSciFiAndActionMovies() {
         List<Genre> genres=new ArrayList<>();
         genres.add(new Genre(28,"Action"));
         genres.add(new Genre(878,"Science Fiction"));
         return getMoviesByMultipleGenres(genres,"Science fiction action movies");
     }
 
-    private Metadata getActionAndAdventureMovies() {
+    private Metadata<List<MovieDTO>> getActionAndAdventureMovies() {
         List<Genre> genres=new ArrayList<>();
         genres.add(new Genre(28,"Action"));
         genres.add(new Genre(12,"Adventure"));
         return getMoviesByMultipleGenres(genres,"Action adventure movies");
     }
 
-    private Metadata getTrendingMovies() {
-        Metadata popularMovies = new Metadata();
+    private Metadata<List<MovieDTO>> getTrendingMovies() {
+        Metadata<List<MovieDTO>> popularMovies = new Metadata<>();
         popularMovies.setTitle("Trending movies");
         popularMovies.setNextPage(LinkUtil.nextPageForMovies(pageablePopular));
-        popularMovies.setMovies(movieService.getMoviesForHomepage(pageablePopular));
+        popularMovies.setData(movieService.getMoviesForHomepage(pageablePopular));
         return popularMovies;
     }
 
-    private Metadata getLatestMovies() {
-        Metadata latestMovies = new Metadata();
+    private Metadata<List<MovieDTO>> getLatestMovies() {
+        Metadata<List<MovieDTO>> latestMovies = new Metadata<>();
         latestMovies.setTitle("Latest movies");
-        latestMovies.setMovies(movieService.getMoviesForHomepage(pageableLatest));
+        latestMovies.setData(movieService.getMoviesForHomepage(pageableLatest));
         latestMovies.setNextPage(LinkUtil.nextPageForMovies(pageableLatest));
         return latestMovies;
     }
 
-    private Metadata getMoviesByGenre(Genre genre) {
-        Metadata movies = new Metadata();
+    private Metadata<List<MovieDTO>> getMoviesByGenre(Genre genre) {
+        Metadata<List<MovieDTO>> movies = new Metadata<>();
+        Pageable pageable=getGenrePageAble();
         movies.setTitle(genre.getName()+" movies");
-        movies.setMovies(movieService.getMoviesByGenre(genre, getGenrePageAble()));
+        movies.setData(movieService.getMoviesByGenre(genre, pageable));
         movies.setNextPage(LinkUtil.nextPageMoviesByGenre(
-                getGenreNames(Collections.singletonList(genre)),getGenrePageAble()));
+                getGenreNames(Collections.singletonList(genre)),pageable));
         return movies;
     }
 
-    private Metadata getMoviesByMultipleGenres(List<Genre> genres,String title) {
-        Metadata movies = new Metadata();
+    private Metadata<List<MovieDTO>> getMoviesByMultipleGenres(List<Genre> genres,String title) {
+        Metadata<List<MovieDTO>> movies = new Metadata<>();
         movies.setTitle(title);
-        movies.setMovies(movieService.getMoviesForHomepageByGenres(genres, getGenrePageAble()));
+        Pageable pageable=getGenrePageAble();
+        movies.setData(movieService.getMoviesForHomepageByGenres(genres, pageable));
         movies.setNextPage(LinkUtil.nextPageMoviesByGenre(
-                getGenreNames(genres),getGenrePageAble()));
+                getGenreNames(genres),pageable));
         return movies;
     }
 

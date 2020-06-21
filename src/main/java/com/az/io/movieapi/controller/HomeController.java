@@ -1,5 +1,6 @@
 package com.az.io.movieapi.controller;
 
+import com.az.io.movieapi.dto.MovieDTO;
 import com.az.io.movieapi.model.Metadata;
 import com.az.io.movieapi.model.ResponseObject;
 import com.az.io.movieapi.service.HomeService;
@@ -18,8 +19,13 @@ public class HomeController {
     private final HomeService homeService;
 
     @GetMapping
-    public ResponseObject<List<Metadata>> getHomePage(){
-        List<Metadata> homePage=homeService.getHomePage();
+    public ResponseObject<List<Metadata<List<MovieDTO>>>> getHomePage(){
+        List<Metadata<List<MovieDTO>>> homePage=homeService.getHomePage();
         return ResponseObject.getSuccessResponse(homePage);
+    }
+
+    @GetMapping("/tv")
+    public ResponseObject<?> getTvHomePage(){
+        return null;
     }
 }

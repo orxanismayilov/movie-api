@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class CustomCacheManager {
+public class CustomCacheManager{
 
     private static CustomCacheManager instance;
-    private final Map<String, List<Metadata>> map;
+    private final Map<String, Object> map;
     private long cacheTime;
     private static final long life=24*60*60;
 
@@ -29,11 +29,11 @@ public class CustomCacheManager {
         return instance;
     }
 
-    synchronized public List<Metadata> get(String key) {
+    synchronized public Object get(String key) {
         return map.get(key);
     }
 
-    public void add(String key,List<Metadata> metadata) {
+    public void add(String key,Object metadata) {
         cacheTime=System.currentTimeMillis();
         map.put(key,metadata);
     }
