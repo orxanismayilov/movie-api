@@ -29,7 +29,7 @@ public class TvController {
     public ResponseObject<Metadata<List<TvDTO>>> getTvs(Pageable pageable) {
         List<TvDTO> tvDTOS = service.getTvsForHomepage(pageable);
         return ResponseObject.getSuccessResponse(Metadata.<List<TvDTO>>builder()
-                .data(tvDTOS)
+                .movies(tvDTOS)
                 .nextPage(LinkUtil.nextPageForTvs(pageable))
                 .build());
     }
@@ -45,7 +45,7 @@ public class TvController {
         List<Genre> genreList=genres.stream().map(genreService::getGenreByName).collect(Collectors.toList());
         return ResponseObject.getSuccessResponse(Metadata.<List<TvDTO>>builder()
                 .nextPage(LinkUtil.nextPageTvsByGenre(genres,pageable))
-                .data(service.getTvsForHomepageByGenres(genreList,pageable))
+                .movies(service.getTvsForHomepageByGenres(genreList,pageable))
                 .build());
     }
 

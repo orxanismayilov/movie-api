@@ -1,12 +1,9 @@
 package com.az.io.movieapi.model;
 
-import com.az.io.movieapi.dto.MovieDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -14,7 +11,7 @@ import java.util.List;
 @Builder
 public class Metadata<T> {
 
-    private T data;
+    private T movies;
     private String title;
     private String nextPage;
 }

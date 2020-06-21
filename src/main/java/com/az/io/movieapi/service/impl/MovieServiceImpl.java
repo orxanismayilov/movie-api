@@ -57,7 +57,7 @@ public class MovieServiceImpl implements MovieService {
                         .getMovieById(movieHomePageDTO.getId()))
                         .toString()));
         return Metadata.<List<MovieDTO>>builder()
-                .data(movieDTOS)
+                .movies(movieDTOS)
                 .title("Similar movies")
                 .nextPage(LinkUtil.nextPageSimilarMovies(movie.getImdbId(), pageablePopular))
                 .build();

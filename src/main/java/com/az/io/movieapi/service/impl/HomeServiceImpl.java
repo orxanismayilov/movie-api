@@ -32,10 +32,10 @@ public class HomeServiceImpl implements HomeService {
 
     @Override
     public List<Metadata<List<MovieDTO>>> getHomePage() {
-        if (!cacheManager.isExist("home") || cacheManager.isExpired()) {
+        if (!cacheManager.isMovieExist("home") || cacheManager.isExpired("home")) {
             resetCache();
         }
-        return (List<Metadata<List<MovieDTO>>>) cacheManager.get("home");
+        return cacheManager.get("home");
     }
 
     public  void resetCache() {
@@ -50,7 +50,7 @@ public class HomeServiceImpl implements HomeService {
         metadata.add(getMoviesByGenre(new Genre(27,"Horror")));
         metadata.add(getMoviesByGenre(new Genre(10749,"Romance")));
         metadata.add(getMoviesByGenre(new Genre(10751,"Family")));
-        cacheManager.add("home",metadata);
+        cacheManager.addMovieCache("home",metadata);
     }
 
     private Metadata<List<MovieDTO>> getSciFiAndActionMovies() {
@@ -71,14 +71,14 @@ public class HomeServiceImpl implements HomeService {
         Metadata<List<MovieDTO>> popularMovies = new Metadata<>();
         popularMovies.setTitle("Trending movies");
         popularMovies.setNextPage(LinkUtil.nextPageForMovies(pageablePopular));
-        popularMovies.setData(movieService.getMoviesForHomepage(pageablePopular));
+        popularMovies.setMovies(movieService.getMoviesForHomepage(pageablePopular));
         return popularMovies;
     }
 
     private Metadata<List<MovieDTO>> getLatestMovies() {
         Metadata<List<MovieDTO>> latestMovies = new Metadata<>();
         latestMovies.setTitle("Latest movies");
-        latestMovies.setData(movieService.getMoviesForHomepage(pageableLatest));
+        latestMovies.setMovies(movieService.getMoviesForHomepage(pageableLatest));
         latestMovies.setNextPage(LinkUtil.nextPageForMovies(pageableLatest));
         return latestMovies;
     }
@@ -87,7 +87,7 @@ public class HomeServiceImpl implements HomeService {
         Metadata<List<MovieDTO>> movies = new Metadata<>();
         Pageable pageable=getGenrePageAble();
         movies.setTitle(genre.getName()+" movies");
-        movies.setData(movieService.getMoviesByGenre(genre, pageable));
+        movies.setMovies(movieService.getMoviesByGenre(genre, pageable));
         movies.setNextPage(LinkUtil.nextPageMoviesByGenre(
                 getGenreNames(Collections.singletonList(genre)),pageable));
         return movies;
@@ -97,7 +97,7 @@ public class HomeServiceImpl implements HomeService {
         Metadata<List<MovieDTO>> movies = new Metadata<>();
         movies.setTitle(title);
         Pageable pageable=getGenrePageAble();
-        movies.setData(movieService.getMoviesForHomepageByGenres(genres, pageable));
+        movies.setMovies(movieService.getMoviesForHomepageByGenres(genres, pageable));
         movies.setNextPage(LinkUtil.nextPageMoviesByGenre(
                 getGenreNames(genres),pageable));
         return movies;

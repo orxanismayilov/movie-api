@@ -28,7 +28,7 @@ public class MovieController {
     public ResponseObject<Metadata<List<MovieDTO>>> getMovies(Pageable pageable) {
         List<MovieDTO> movieDTOS = movieService.getMoviesForHomepage(pageable);
         return ResponseObject.getSuccessResponse(Metadata.<List<MovieDTO>>builder()
-                .data(movieDTOS)
+                .movies(movieDTOS)
                 .nextPage(LinkUtil.nextPageForMovies(pageable))
                 .build());
     }
@@ -44,7 +44,7 @@ public class MovieController {
         List<Genre> genreList=genres.stream().map(genreService::getGenreByName).collect(Collectors.toList());
         return ResponseObject.getSuccessResponse(Metadata.<List<MovieDTO>>builder()
                 .nextPage(LinkUtil.nextPageMoviesByGenre(genres,pageable))
-                .data(movieService.getMoviesForHomepageByGenres(genreList,pageable))
+                .movies(movieService.getMoviesForHomepageByGenres(genreList,pageable))
                 .build());
     }
 
