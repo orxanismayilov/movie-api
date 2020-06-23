@@ -20,7 +20,7 @@ public class HomeController {
 
     @GetMapping
     public ResponseObject<List<Metadata<List<MovieDTO>>>> getHomePage(){
-        List<Metadata<List<MovieDTO>>> homePage=homeService.getHomePage();
+        List<Metadata<List<MovieDTO>>> homePage=homeService.getMovieHomePage();
         return ResponseObject.getSuccessResponse(homePage);
     }
 

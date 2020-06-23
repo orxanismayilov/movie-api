@@ -2,8 +2,8 @@ package com.az.io.movieapi.cache;
 
 
 import com.az.io.movieapi.dto.MovieDTO;
+import com.az.io.movieapi.dto.TvDTO;
 import com.az.io.movieapi.model.Metadata;
-import com.az.io.movieapi.model.Tv;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -16,7 +16,7 @@ public class CustomCacheManager {
 
     private static CustomCacheManager instance;
     private final Map<String, List<Metadata<List<MovieDTO>>>> movieMap;
-    private final Map<String, Metadata<List<Tv>>> seriesMap;
+    private final Map<String, List<Metadata<List<TvDTO>>>> seriesMap;
     private final Map<String, Long> cacheTimeMap;
     private static final long life = 24 * 60 * 60;
 
@@ -33,17 +33,21 @@ public class CustomCacheManager {
         return instance;
     }
 
-    synchronized public List<Metadata<List<MovieDTO>>> get(String key) {
+    synchronized public List<Metadata<List<MovieDTO>>> getMovieCache(String key) {
         return movieMap.get(key);
     }
 
+    synchronized public List<Metadata<List<TvDTO>>> getTvCache(String key) {
+        return seriesMap.get(key);
+    }
+
     public void addMovieCache(String key, List<Metadata<List<MovieDTO>>> metadata) {
-        cacheTimeMap.put(key,System.currentTimeMillis());
+        cacheTimeMap.put(key, System.currentTimeMillis());
         movieMap.put(key, metadata);
     }
 
-    public void addSeriesCache(String key, Metadata<List<Tv>> metadata) {
-        cacheTimeMap.put(key,System.currentTimeMillis());
+    public void addSeriesCache(String key, List<Metadata<List<TvDTO>>> metadata) {
+        cacheTimeMap.put(key, System.currentTimeMillis());
         seriesMap.put(key, metadata);
     }
 

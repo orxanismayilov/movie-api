@@ -2,10 +2,12 @@ package com.az.io.movieapi.service.impl;
 
 import com.az.io.movieapi.cache.CustomCacheManager;
 import com.az.io.movieapi.dto.MovieDTO;
+import com.az.io.movieapi.dto.TvDTO;
 import com.az.io.movieapi.model.Genre;
 import com.az.io.movieapi.model.Metadata;
 import com.az.io.movieapi.service.HomeService;
 import com.az.io.movieapi.service.MovieService;
+import com.az.io.movieapi.service.TvService;
 import com.az.io.movieapi.util.LinkUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -27,18 +29,45 @@ public class HomeServiceImpl implements HomeService {
             Sort.by("popularity").descending());
     private static final Pageable pageableLatest = PageRequest.of(0, 30,
             Sort.by("releaseDate").descending());
+    private static  final String MOVIE_CACHE_KEY="movieHome";
+    private static final String TV_CACHE_KEY="tvHome";
     private final MovieService movieService;
     private final CustomCacheManager cacheManager;
+    private final TvService tvService;
 
     @Override
-    public List<Metadata<List<MovieDTO>>> getHomePage() {
-        if (!cacheManager.isMovieExist("home") || cacheManager.isExpired("home")) {
-            resetCache();
+    public List<Metadata<List<MovieDTO>>> getMovieHomePage() {
+        if (!cacheManager.isMovieExist(MOVIE_CACHE_KEY) || cacheManager.isExpired(MOVIE_CACHE_KEY)) {
+            resetMovieCache();
         }
-        return cacheManager.get("home");
+        return cacheManager.getMovieCache(MOVIE_CACHE_KEY);
     }
 
-    public  void resetCache() {
+    @Override
+    public List<Metadata<List<TvDTO>>> getTvHomePage() {
+        if (!cacheManager.isMovieExist(TV_CACHE_KEY) || cacheManager.isExpired(TV_CACHE_KEY)) {
+            resetTvCache();
+        }
+        return cacheManager.getTvCache(TV_CACHE_KEY);
+    }
+
+    @Override
+    public void resetTvCache() {
+        List<Metadata<List<TvDTO>>> metadata = new ArrayList<>();
+        metadata.add(getTrendingTvs());
+        metadata.add(getLatestTvs());
+        metadata.add(getActionAndAdventureTvs());
+        metadata.add(getTvsByGenre(new Genre(35,"Comedy")));
+        metadata.add(getSciFiAndActionTvs());
+        metadata.add(getTvsByGenre(new Genre(53,"Thriller")));
+        metadata.add(getTvsByGenre(new Genre(878,"Science Fiction")));
+        metadata.add(getTvsByGenre(new Genre(27,"Horror")));
+        metadata.add(getTvsByGenre(new Genre(10749,"Romance")));
+        metadata.add(getTvsByGenre(new Genre(10751,"Family")));
+        cacheManager.addSeriesCache(TV_CACHE_KEY,metadata);
+    }
+
+    public  void resetMovieCache() {
         List<Metadata<List<MovieDTO>>> metadata = new ArrayList<>();
         metadata.add(getTrendingMovies());
         metadata.add(getLatestMovies());
@@ -50,7 +79,7 @@ public class HomeServiceImpl implements HomeService {
         metadata.add(getMoviesByGenre(new Genre(27,"Horror")));
         metadata.add(getMoviesByGenre(new Genre(10749,"Romance")));
         metadata.add(getMoviesByGenre(new Genre(10751,"Family")));
-        cacheManager.addMovieCache("home",metadata);
+        cacheManager.addMovieCache(MOVIE_CACHE_KEY,metadata);
     }
 
     private Metadata<List<MovieDTO>> getSciFiAndActionMovies() {
@@ -81,6 +110,56 @@ public class HomeServiceImpl implements HomeService {
         latestMovies.setMovies(movieService.getMoviesForHomepage(pageableLatest));
         latestMovies.setNextPage(LinkUtil.nextPageForMovies(pageableLatest));
         return latestMovies;
+    }
+
+    private Metadata<List<TvDTO>> getTrendingTvs() {
+        Metadata<List<TvDTO>> popularMovies = new Metadata<>();
+        popularMovies.setTitle("Trending movies");
+        popularMovies.setNextPage(LinkUtil.nextPageForMovies(pageablePopular));
+        popularMovies.setMovies(tvService.getTvsForHomepage(pageablePopular));
+        return popularMovies;
+    }
+
+    private Metadata<List<TvDTO>> getLatestTvs() {
+        Metadata<List<TvDTO>> latestMovies = new Metadata<>();
+        latestMovies.setTitle("Latest movies");
+        latestMovies.setMovies(tvService.getTvsForHomepage(pageableLatest));
+        latestMovies.setNextPage(LinkUtil.nextPageForTvs(pageableLatest));
+        return latestMovies;
+    }
+
+    private Metadata<List<TvDTO>> getActionAndAdventureTvs() {
+        List<Genre> genres=new ArrayList<>();
+        genres.add(new Genre(28,"Action"));
+        genres.add(new Genre(12,"Adventure"));
+        return getTvsByMultipleGenres(genres,"Action adventure movies");
+    }
+
+    private Metadata<List<TvDTO>> getSciFiAndActionTvs() {
+        List<Genre> genres=new ArrayList<>();
+        genres.add(new Genre(28,"Action"));
+        genres.add(new Genre(878,"Science Fiction"));
+        return getTvsByMultipleGenres(genres,"Science fiction action movies");
+    }
+
+    private Metadata<List<TvDTO>> getTvsByGenre(Genre genre) {
+        Metadata<List<TvDTO>> tvs = new Metadata<>();
+        Pageable pageable=getGenrePageAble();
+        tvs.setTitle(genre.getName()+" movies");
+        tvs.setMovies(tvService.getTvByGenre(genre, pageable));
+        tvs.setNextPage(LinkUtil.nextPageTvsByGenre(
+                getGenreNames(Collections.singletonList(genre)),pageable));
+        return tvs;
+    }
+
+    private Metadata<List<TvDTO>> getTvsByMultipleGenres(List<Genre> genres,String title) {
+        Metadata<List<TvDTO>> movies = new Metadata<>();
+        movies.setTitle(title);
+        Pageable pageable=getGenrePageAble();
+        movies.setMovies(tvService.getTvsForHomepageByGenres(genres, pageable));
+        movies.setNextPage(LinkUtil.nextPageTvsByGenre(
+                getGenreNames(genres),pageable));
+        return movies;
     }
 
     private Metadata<List<MovieDTO>> getMoviesByGenre(Genre genre) {

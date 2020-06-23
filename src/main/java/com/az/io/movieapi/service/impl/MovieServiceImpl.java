@@ -48,6 +48,7 @@ public class MovieServiceImpl implements MovieService {
         return movieDetails;
     }
 
+    @Override
     public Metadata<List<MovieDTO>> getSimilarMovies(String movieId,Pageable pageable) {
         Movie movie=repo.findById(movieId).orElseThrow(NotFoundException::new);
         List<MovieDTO> movieDTOS = MovieDTOMapper.convertProjection(repo.findDistinctByKeywordsIn(movie.getKeywords(), pageable));
@@ -59,7 +60,7 @@ public class MovieServiceImpl implements MovieService {
         return Metadata.<List<MovieDTO>>builder()
                 .movies(movieDTOS)
                 .title("Similar movies")
-                .nextPage(LinkUtil.nextPageSimilarMovies(movie.getImdbId(), pageablePopular))
+                .nextPage(LinkUtil.nextPageSimilarMovies(movie.getImdbId(), pageable))
                 .build();
     }
 
