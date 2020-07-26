@@ -19,7 +19,7 @@ public class Video {
     private String videoPath;
     private boolean status;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER,cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     @JoinColumn(name = "movie_id")
     private Movie movie;
 }

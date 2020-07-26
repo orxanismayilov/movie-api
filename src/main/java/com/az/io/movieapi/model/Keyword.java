@@ -19,6 +19,6 @@ public class Keyword {
     private int id;
     private String name;
 
-    @ManyToMany(mappedBy = "keywords",fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "keywords",fetch = FetchType.LAZY)
     private List<Movie> movies;
 }

@@ -71,6 +71,8 @@ public class HomeServiceImpl implements HomeService {
         List<Metadata<List<MovieDTO>>> metadata = new ArrayList<>();
         metadata.add(getTrendingMovies());
         metadata.add(getLatestMovies());
+        metadata.add(getMoviesBuLang("tr"));
+        metadata.add(getMoviesBuLang("rus"));
         metadata.add(getActionAndAdventureMovies());
         metadata.add(getMoviesByGenre(new Genre(35,"Comedy")));
         metadata.add(getSciFiAndActionMovies());
@@ -79,7 +81,16 @@ public class HomeServiceImpl implements HomeService {
         metadata.add(getMoviesByGenre(new Genre(27,"Horror")));
         metadata.add(getMoviesByGenre(new Genre(10749,"Romance")));
         metadata.add(getMoviesByGenre(new Genre(10751,"Family")));
+        metadata.add(getMoviesByGenre(new Genre(18,"Drama")));
         cacheManager.addMovieCache(MOVIE_CACHE_KEY,metadata);
+    }
+
+    private Metadata<List<MovieDTO>> getMoviesBuLang(String lang) {
+        Metadata<List<MovieDTO>> metadata=new Metadata<>();
+        metadata.setTitle(lang.equals("tr")?"Movies in Turkish":"Movies in Russian");
+        metadata.setMovies(movieService.getMoviesByLanguage(lang,pageablePopular));
+        metadata.setNextPage(LinkUtil.nextPageMoviesByLang(lang,pageablePopular));
+        return metadata;
     }
 
     private Metadata<List<MovieDTO>> getSciFiAndActionMovies() {
@@ -114,15 +125,15 @@ public class HomeServiceImpl implements HomeService {
 
     private Metadata<List<TvDTO>> getTrendingTvs() {
         Metadata<List<TvDTO>> popularMovies = new Metadata<>();
-        popularMovies.setTitle("Trending movies");
-        popularMovies.setNextPage(LinkUtil.nextPageForMovies(pageablePopular));
+        popularMovies.setTitle("Trending series");
+        popularMovies.setNextPage(LinkUtil.nextPageForTvs(pageablePopular));
         popularMovies.setMovies(tvService.getTvsForHomepage(pageablePopular));
         return popularMovies;
     }
 
     private Metadata<List<TvDTO>> getLatestTvs() {
         Metadata<List<TvDTO>> latestMovies = new Metadata<>();
-        latestMovies.setTitle("Latest movies");
+        latestMovies.setTitle("Latest series");
         latestMovies.setMovies(tvService.getTvsForHomepage(pageableLatest));
         latestMovies.setNextPage(LinkUtil.nextPageForTvs(pageableLatest));
         return latestMovies;
@@ -132,20 +143,20 @@ public class HomeServiceImpl implements HomeService {
         List<Genre> genres=new ArrayList<>();
         genres.add(new Genre(28,"Action"));
         genres.add(new Genre(12,"Adventure"));
-        return getTvsByMultipleGenres(genres,"Action adventure movies");
+        return getTvsByMultipleGenres(genres,"Action adventure series");
     }
 
     private Metadata<List<TvDTO>> getSciFiAndActionTvs() {
         List<Genre> genres=new ArrayList<>();
         genres.add(new Genre(28,"Action"));
         genres.add(new Genre(878,"Science Fiction"));
-        return getTvsByMultipleGenres(genres,"Science fiction action movies");
+        return getTvsByMultipleGenres(genres,"Science fiction action series");
     }
 
     private Metadata<List<TvDTO>> getTvsByGenre(Genre genre) {
         Metadata<List<TvDTO>> tvs = new Metadata<>();
         Pageable pageable=getGenrePageAble();
-        tvs.setTitle(genre.getName()+" movies");
+        tvs.setTitle(genre.getName()+" series");
         tvs.setMovies(tvService.getTvByGenre(genre, pageable));
         tvs.setNextPage(LinkUtil.nextPageTvsByGenre(
                 getGenreNames(Collections.singletonList(genre)),pageable));

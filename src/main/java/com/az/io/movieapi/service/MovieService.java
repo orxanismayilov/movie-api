@@ -15,13 +15,15 @@ public interface MovieService {
 
     MovieDetails getMovieById(String movieId);
 
-    List<MovieDTO> searchByTitle(String name);
+    Metadata<List<MovieDTO>> searchByTitle(String name,Pageable pageable);
 
     void addMovie(Movie movie);
 
     void addMovieList(List<Movie> movies);
 
     List<MovieDTO> getMoviesForHomepage(Pageable pageable);
+
+    List<MovieDTO> getMoviesByLanguage(String language,Pageable pageable);
 
     List<MovieDTO> getMoviesForHomepageByGenres(List<Genre> genres, Pageable pageable);
 

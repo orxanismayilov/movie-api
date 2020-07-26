@@ -20,6 +20,15 @@ public class LinkUtil {
         return link.toString();
     }
 
+    public static String nextPageSearchMovies(String q,Pageable pageable){
+        StringBuilder link=new StringBuilder();
+        link.append(linkTo(methodOn(MovieController.class).searchMovies(q,pageable)))
+                .append("?page=").append(pageable.next().getPageNumber())
+                .append("&size=").append(pageable.getPageSize());
+        getPageableParams(link,pageable);
+        return link.toString();
+    }
+
     public static String nextPageMoviesByGenre(List<String> genreName, Pageable pageable) {
         StringBuilder link=new StringBuilder();
 
@@ -33,6 +42,15 @@ public class LinkUtil {
     public static String nextPageSimilarMovies(String movieId,Pageable pageable) {
         StringBuilder link=new StringBuilder();
         link.append(linkTo(methodOn(MovieController.class).getSimilarMovies(movieId,pageable)))
+                .append("?page=").append(pageable.next().getPageNumber())
+                .append("&size=").append(pageable.getPageSize());
+        getPageableParams(link,pageable);
+        return link.toString();
+    }
+
+    public static String nextPageMoviesByLang(String lang,Pageable pageable) {
+        StringBuilder link=new StringBuilder();
+        link.append(linkTo(methodOn(MovieController.class).getMoviesByLanguage(lang,pageable)))
                 .append("?page=").append(pageable.next().getPageNumber())
                 .append("&size=").append(pageable.getPageSize());
         getPageableParams(link,pageable);

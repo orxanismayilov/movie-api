@@ -1,6 +1,7 @@
 package com.az.io.movieapi.controller;
 
 import com.az.io.movieapi.dto.MovieDTO;
+import com.az.io.movieapi.dto.TvDTO;
 import com.az.io.movieapi.model.Metadata;
 import com.az.io.movieapi.model.ResponseObject;
 import com.az.io.movieapi.service.HomeService;
@@ -25,7 +26,13 @@ public class HomeController {
     }
 
     @GetMapping("/tv")
-    public ResponseObject<?> getTvHomePage(){
-        return null;
+    public ResponseObject<List<Metadata<List<TvDTO>>>> getTvHomePage(){
+        return ResponseObject.getSuccessResponse(homeService.getTvHomePage());
+    }
+
+    @GetMapping("/reset")
+    public void resetCache(){
+        homeService.resetMovieCache();
+        homeService.resetTvCache();
     }
 }

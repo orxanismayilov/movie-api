@@ -10,7 +10,7 @@ import com.az.io.movieapi.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Collection;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +25,7 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     public VideoDTO getVideoByMovieId(String movieId, String language) {
-        return VideoMapper.convertValue(repo.findByMovieAndLanguage(new Movie(movieId),language).orElseThrow(NotFoundException::new));
+        return VideoMapper.convertValue(repo.findByMovie_ImdbIdAndLanguage(movieId, language).orElseThrow(NotFoundException::new));
     }
 
     @Override
@@ -39,12 +39,12 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public void addVideoList(List<Video> videos) {
+    public void addVideoList(Collection<Video> videos) {
         repo.saveAll(videos);
     }
 
     @Override
-    public boolean isVideoExists(Movie movie,String language) {
-        return repo.findByMovieAndLanguage(movie,language).isPresent();
+    public boolean isVideoExists(Movie movie, String language) {
+        return repo.findAllByMovieAndLanguage(movie, language).size() != 0;
     }
 }

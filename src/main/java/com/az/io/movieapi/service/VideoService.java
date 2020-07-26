@@ -4,6 +4,7 @@ import com.az.io.movieapi.dto.VideoDTO;
 import com.az.io.movieapi.model.Movie;
 import com.az.io.movieapi.model.Video;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface VideoService {
@@ -16,7 +17,7 @@ public interface VideoService {
 
     void deleteVideoById();
 
-    void addVideoList(List<Video> videos);
+    void addVideoList(Collection<Video> videos);
 
     boolean isVideoExists(Movie movie, String language);
 }

@@ -23,4 +23,6 @@ public interface MovieRepo extends JpaRepository<Movie, String> {
     List<MovieProjection> findDistinctByKeywordsIn(Collection<Keyword> keywords, Pageable pageable);
 
     List<MovieProjection> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+
+    List<MovieProjection> findDistinctByVideos_Language(String language,Pageable pageable);
 }

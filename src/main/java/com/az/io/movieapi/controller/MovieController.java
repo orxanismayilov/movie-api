@@ -54,8 +54,16 @@ public class MovieController {
     }
 
     @GetMapping("/search")
-    public ResponseObject<List<MovieDTO>> searchMovies(@RequestParam("q") String q) {
-        return ResponseObject.getSuccessResponse(movieService.searchByTitle(q));
+    public ResponseObject<Metadata<List<MovieDTO>>> searchMovies(@RequestParam("q") String q,Pageable pageable) {
+        return ResponseObject.getSuccessResponse(movieService.searchByTitle(q,pageable));
+    }
+
+    @GetMapping("/lang/{language}")
+    public ResponseObject<?> getMoviesByLanguage(@PathVariable String language,Pageable pageable) {
+        return ResponseObject.getSuccessResponse(Metadata.<List<MovieDTO>>builder()
+                .nextPage(LinkUtil.nextPageMoviesByLang(language,pageable))
+                .movies(movieService.getMoviesByLanguage(language,pageable))
+                .build());
     }
 
     @PostMapping

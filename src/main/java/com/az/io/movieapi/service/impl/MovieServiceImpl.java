@@ -8,6 +8,7 @@ import com.az.io.movieapi.mapper.MovieDTOMapper;
 import com.az.io.movieapi.model.Genre;
 import com.az.io.movieapi.model.Metadata;
 import com.az.io.movieapi.model.Movie;
+import com.az.io.movieapi.model.Video;
 import com.az.io.movieapi.projections.MovieProjection;
 import com.az.io.movieapi.repo.MovieRepo;
 import com.az.io.movieapi.service.MovieService;
@@ -18,6 +19,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,16 +44,16 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public MovieDetails getMovieById(String movieId) {
-        Movie movie=repo.findById(movieId).orElseThrow(NotFoundException::new);
-        MovieDetails movieDetails= MovieDTOMapper.convertDetails(repo.findByImdbIdAndStatusIsTrue(movieId)
+        Movie movie = repo.findById(movieId).orElseThrow(NotFoundException::new);
+        MovieDetails movieDetails = MovieDTOMapper.convertDetails(repo.findByImdbIdAndStatusIsTrue(movieId)
                 .orElseThrow(NotFoundException::new));
-        movieDetails.setMetadata(getSimilarMovies(movie.getImdbId(),pageablePopular));
+        movieDetails.setMetadata(getSimilarMovies(movie.getImdbId(), pageablePopular));
         return movieDetails;
     }
 
     @Override
-    public Metadata<List<MovieDTO>> getSimilarMovies(String movieId,Pageable pageable) {
-        Movie movie=repo.findById(movieId).orElseThrow(NotFoundException::new);
+    public Metadata<List<MovieDTO>> getSimilarMovies(String movieId, Pageable pageable) {
+        Movie movie = repo.findById(movieId).orElseThrow(NotFoundException::new);
         List<MovieDTO> movieDTOS = MovieDTOMapper.convertProjection(repo.findDistinctByKeywordsIn(movie.getKeywords(), pageable));
         movieDTOS.removeIf(movieDTO -> movieDTO.getId().equals(movie.getImdbId()));
         movieDTOS.forEach(movieHomePageDTO ->
@@ -65,17 +68,23 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public List<MovieDTO> searchByTitle(String name) {
-        List<MovieProjection> projections= repo.findByTitleContainingIgnoreCase(name,
-                        PageRequest.of(0,5,Sort.by("popularity").descending()));
-        List<MovieDTO> movieDTOS=MovieDTOMapper.convertProjection(projections);
+    public Metadata<List<MovieDTO>> searchByTitle(String name,Pageable pageable) {
+        List<MovieProjection> projections = repo.findByTitleContainingIgnoreCase(name,
+                PageRequest.of(0, 30, Sort.by("popularity").descending()));
+        List<MovieDTO> movieDTOS = MovieDTOMapper.convertProjection(projections);
         movieDTOS.forEach(movieDTO -> movieDTO.setLink(linkTo(methodOn(MovieController.class)
                 .getMovieById(movieDTO.getId())).toString()));
-        return movieDTOS;
+        return Metadata.<List<MovieDTO>>builder()
+                .nextPage(LinkUtil.nextPageSimilarMovies(name,pageable))
+                .movies(movieDTOS)
+                .build();
     }
 
     @Override
+    @Transactional
     public void addMovie(Movie movie) {
+        movie.getVideos().removeIf(video -> videoService.isVideoExists(movie,video.getLanguage()));
+        movie.getVideos().forEach(video -> video.setMovie(movie));
         repo.save(movie);
     }
 
@@ -93,9 +102,11 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    @Transactional
     public void addMovieList(List<Movie> movies) {
-        movies.forEach(movie -> movie.getVideos().removeIf(video -> videoService.isVideoExists(movie,video.getLanguage())));
-       repo.saveAll(movies);
+        movies.forEach(movie -> movie.getVideos().removeIf(video -> videoService.isVideoExists(movie, video.getLanguage())));
+        movies.forEach(movie -> movie.getVideos().forEach(video -> video.setMovie(new Movie(movie.getImdbId()))));
+        repo.saveAll(movies);
     }
 
     @Override
@@ -109,8 +120,18 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public List<MovieDTO> getMoviesByGenre(Genre genre,Pageable pageable) {
-        List<MovieDTO> movieDTOS = MovieDTOMapper.convertProjection(repo.findDistinctByGenres_Id(genre.getId(),pageable));
+    public List<MovieDTO> getMoviesByGenre(Genre genre, Pageable pageable) {
+        List<MovieDTO> movieDTOS = MovieDTOMapper.convertProjection(repo.findDistinctByGenres_Id(genre.getId(), pageable));
+        movieDTOS.forEach(movieHomePageDTO ->
+                movieHomePageDTO.setLink(linkTo(methodOn(MovieController.class)
+                        .getMovieById(movieHomePageDTO.getId()))
+                        .toString()));
+        return movieDTOS;
+    }
+
+    @Override
+    public List<MovieDTO> getMoviesByLanguage(String language, Pageable pageable) {
+        List<MovieDTO> movieDTOS = MovieDTOMapper.convertProjection(repo.findDistinctByVideos_Language(language, pageable));
         movieDTOS.forEach(movieHomePageDTO ->
                 movieHomePageDTO.setLink(linkTo(methodOn(MovieController.class)
                         .getMovieById(movieHomePageDTO.getId()))
