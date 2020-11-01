@@ -1,8 +1,9 @@
 package com.az.io.movieapi.controller;
 
-import com.az.io.movieapi.dto.VideoDTO;
+import com.az.io.movieapi.dto.VideoWithSubtitleDTO;
 import com.az.io.movieapi.model.ResponseObject;
 import com.az.io.movieapi.model.Video;
+import com.az.io.movieapi.service.SubtitleService;
 import com.az.io.movieapi.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +16,15 @@ import java.util.List;
 public class VideoController {
 
     private final VideoService videoService;
+    private final SubtitleService subtitleService;
 
     @GetMapping("/{movieId}/{language}")
-    public ResponseObject<VideoDTO> getVideo(@PathVariable("movieId") String movieId
-                                                 , @PathVariable("language") String language) {
-        return ResponseObject.getSuccessResponse(videoService.getVideoByMovieId(movieId,language));
+    public ResponseObject<VideoWithSubtitleDTO> getVideo(@PathVariable("movieId") String movieId
+            , @PathVariable("language") String language) {
+        VideoWithSubtitleDTO videoWithSubtitleDTO = new VideoWithSubtitleDTO();
+        videoWithSubtitleDTO.setSubtitles(subtitleService.getSubtitlesByMovieId(movieId));
+        videoWithSubtitleDTO.setVideoDTO(videoService.getVideoByMovieId(movieId, language));
+        return ResponseObject.getSuccessResponse(videoWithSubtitleDTO);
     }
 
     @PostMapping

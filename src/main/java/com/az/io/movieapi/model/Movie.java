@@ -84,6 +84,9 @@ public class Movie {
     @OneToMany(mappedBy = "movie")
     private Set<MovieHistory> movieHistories;
 
+    @OneToMany(mappedBy = "movie",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    private Set<Subtitle> subtitles;
+
     public Movie(String movieId) {
         this.imdbId=movieId;
     }

@@ -6,6 +6,8 @@ import com.az.io.movieapi.model.Movie;
 import com.az.io.movieapi.projections.MovieProjection;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,7 +22,13 @@ public interface MovieRepo extends JpaRepository<Movie, String> {
 
     List<MovieProjection> findDistinctByGenres_Id(Integer genres_id,Pageable pageable);
 
-    List<MovieProjection> findDistinctByKeywordsIn(Collection<Keyword> keywords, Pageable pageable);
+    @Query(value = "SELECT m.*\n" +
+            "            FROM movie m,movie_keyword mk, keyword k\n" +
+            "            WHERE mk.keyword_id = k.id\n" +
+            "            AND (k.name IN :keywords)\n" +
+            "            AND m.imdb_id = mk.movie_id\n" +
+            "            GROUP BY m.imdb_id",nativeQuery = true)
+    List<Movie> findDistinctByKeywordsIn(@Param("keywords") Collection<String> keywords, Pageable pageable);
 
     List<MovieProjection> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 

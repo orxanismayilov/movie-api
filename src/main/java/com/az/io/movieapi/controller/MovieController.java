@@ -66,6 +66,11 @@ public class MovieController {
                 .build());
     }
 
+    @GetMapping("/submit/{movieId}")
+    public void submitProblem(@PathVariable String movieId) {
+
+    }
+
     @PostMapping
     public void AddMovie(@RequestBody Movie movie) {
         movieService.addMovie(movie);
