@@ -21,4 +21,12 @@ public class Keyword {
 
     @ManyToMany(mappedBy = "keywords",fetch = FetchType.LAZY)
     private List<Movie> movies;
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.MERGE,
+                    CascadeType.DETACH
+            },
+            mappedBy = "keywords")
+    private List<Tv> tvs;
 }

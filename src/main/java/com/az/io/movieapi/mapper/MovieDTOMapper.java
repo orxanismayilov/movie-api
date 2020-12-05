@@ -7,6 +7,7 @@ import com.az.io.movieapi.projections.MovieProjection;
 import com.az.io.movieapi.projections.VideoProjection;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,7 @@ public class MovieDTOMapper {
         details.setTrailerPath(movie.getTrailerPath());
         details.setGenres(movie.getGenres().stream().map(Genre::getName).collect(Collectors.toList()));
         details.setCompanies(movie.getCompanies().stream().map(Company::getName).collect(Collectors.toList()));
-        details.setCast(movie.getCast().stream().limit(5).map(Cast::getName).collect(Collectors.toList()));
+        details.setCast(movie.getCast().stream().sorted(Comparator.comparingInt(Cast::getOrder)).limit(5).map(Cast::getName).collect(Collectors.toList()));
         details.setCountries(movie.getCountries().stream().map(Country::getName).collect(Collectors.toList()));
         details.setDirector(movie.getCrew().stream()
                 .filter(crew -> crew.getJob().equals("Director"))

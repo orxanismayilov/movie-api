@@ -26,6 +26,11 @@ public class Cast {
     @ManyToMany(mappedBy = "cast")
     private List<Movie> movie;
 
-    @ManyToMany(mappedBy = "cast")
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.MERGE,
+                    CascadeType.DETACH
+            },
+            mappedBy = "cast")
     private Set<Tv> tvs;
 }

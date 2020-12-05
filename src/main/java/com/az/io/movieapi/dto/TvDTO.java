@@ -12,11 +12,17 @@ import java.util.List;
 @Getter
 @Setter
 public class TvDTO {
-
-    private String id;
-    private String title;
+    private String imdbId;
+    private String name;
     private String posterPath;
     private List<String> languages;
     private float imdbRating;
     private String link;
+
+    public TvDTO(String imdbId, String name, String posterPath, float imdbRating) {
+        this.imdbId = imdbId;
+        this.name = name;
+        this.posterPath = posterPath;
+        this.imdbRating = imdbRating;
+    }
 }

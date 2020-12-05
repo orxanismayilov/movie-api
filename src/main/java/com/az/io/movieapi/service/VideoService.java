@@ -5,7 +5,6 @@ import com.az.io.movieapi.model.Movie;
 import com.az.io.movieapi.model.Video;
 
 import java.util.Collection;
-import java.util.List;
 
 public interface VideoService {
 

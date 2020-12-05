@@ -16,6 +16,6 @@ public class SubtitleServiceImpl implements SubtitleService {
 
     @Override
     public List<SubtitleProjection> getSubtitlesByMovieId(String movieId) {
-        return subtitleRepo.findAllByMovieId(movieId);
+        return subtitleRepo.findAllByMovie_ImdbId(movieId);
     }
 }

@@ -14,4 +14,5 @@ public class Metadata<T> {
     private T movies;
     private String title;
     private String nextPage;
+    private int responseType;
 }

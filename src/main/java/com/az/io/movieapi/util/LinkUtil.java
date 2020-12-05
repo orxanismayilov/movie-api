@@ -23,7 +23,7 @@ public class LinkUtil {
     public static String nextPageSearchMovies(String q,Pageable pageable){
         StringBuilder link=new StringBuilder();
         link.append(linkTo(methodOn(MovieController.class).searchMovies(q,pageable)))
-                .append("?page=").append(pageable.next().getPageNumber())
+                .append("&page=").append(pageable.next().getPageNumber())
                 .append("&size=").append(pageable.getPageSize());
         getPageableParams(link,pageable);
         return link.toString();

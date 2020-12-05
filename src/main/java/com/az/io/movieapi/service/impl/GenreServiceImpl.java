@@ -1,14 +1,15 @@
 package com.az.io.movieapi.service.impl;
 
-import com.az.io.movieapi.enums.GenreType;
 import com.az.io.movieapi.exception.NotFoundException;
 import com.az.io.movieapi.model.Genre;
+import com.az.io.movieapi.model.Tv;
 import com.az.io.movieapi.repo.GenreRepo;
 import com.az.io.movieapi.service.GenreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Collections;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -16,18 +17,20 @@ public class GenreServiceImpl implements GenreService {
 
     private final GenreRepo repo;
 
-    @Override
-    public List<Genre> getGenreByType(int genreType) {
-        return repo.findAllByType(genreType);
-    }
 
     @Override
     public Genre getGenreByName(String name) {
-        return repo.findByNameAndType(name,GenreType.MOVIE.getCode()).orElseThrow(NotFoundException::new);
+        return repo.findByName(name).orElseThrow(NotFoundException::new);
     }
 
     @Override
     public Genre getMovieGenreById(int id) {
-        return repo.findByIdAndType(id,GenreType.MOVIE.getCode()).orElseThrow(NotFoundException::new);
+        return repo.findById(id).orElseThrow(NotFoundException::new);
+    }
+
+    @Override
+    public void addTvGenre(Set<Genre> genres, Tv tv) {
+        genres.forEach(genre -> genre.setTvs(Collections.singletonList(tv)));
+        repo.saveAll(genres);
     }
 }

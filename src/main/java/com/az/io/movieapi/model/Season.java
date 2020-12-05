@@ -18,8 +18,7 @@ import java.util.Set;
 public class Season {
 
     @Id
-    @GeneratedValue
-    private int id;
+    private long id;
     private Date airDate;
     private String name;
     private String overview;
@@ -27,11 +26,16 @@ public class Season {
     private int seasonNumber;
     private int episodeCount;
 
-    @OneToMany(mappedBy = "season")
+    @OneToMany(mappedBy = "season",fetch = FetchType.LAZY,cascade = {CascadeType.DETACH,CascadeType.MERGE})
     private Set<Episode> episodes;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.DETACH,CascadeType.MERGE})
     @JoinColumn(name = "tv_id")
     private Tv tv;
 
+    public static Season withId(long id) {
+        Season season=new Season();
+        season.setId(id);
+        return season;
+    }
 }

@@ -1,6 +1,6 @@
 package com.az.io.movieapi.controller;
 
-import com.az.io.movieapi.dto.VideoWithSubtitleDTO;
+import com.az.io.movieapi.dto.VideoDTO;
 import com.az.io.movieapi.model.ResponseObject;
 import com.az.io.movieapi.model.Video;
 import com.az.io.movieapi.service.SubtitleService;
@@ -19,12 +19,11 @@ public class VideoController {
     private final SubtitleService subtitleService;
 
     @GetMapping("/{movieId}/{language}")
-    public ResponseObject<VideoWithSubtitleDTO> getVideo(@PathVariable("movieId") String movieId
+    public ResponseObject<VideoDTO> getVideo(@PathVariable("movieId") String movieId
             , @PathVariable("language") String language) {
-        VideoWithSubtitleDTO videoWithSubtitleDTO = new VideoWithSubtitleDTO();
-        videoWithSubtitleDTO.setSubtitles(subtitleService.getSubtitlesByMovieId(movieId));
-        videoWithSubtitleDTO.setVideoDTO(videoService.getVideoByMovieId(movieId, language));
-        return ResponseObject.getSuccessResponse(videoWithSubtitleDTO);
+        VideoDTO video = videoService.getVideoByMovieId(movieId, language);
+        video.setSubtitle(subtitleService.getSubtitlesByMovieId(movieId));
+        return ResponseObject.getMovieSuccessResponse(video);
     }
 
     @PostMapping

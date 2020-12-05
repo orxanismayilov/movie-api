@@ -28,22 +28,22 @@ public class TvController {
     @GetMapping
     public ResponseObject<Metadata<List<TvDTO>>> getTvs(Pageable pageable) {
         List<TvDTO> tvDTOS = service.getTvsForHomepage(pageable);
-        return ResponseObject.getSuccessResponse(Metadata.<List<TvDTO>>builder()
+        return ResponseObject.getTvSuccessResponse(Metadata.<List<TvDTO>>builder()
                 .movies(tvDTOS)
                 .nextPage(LinkUtil.nextPageForTvs(pageable))
                 .build());
     }
 
-    @GetMapping("/{tvId}")
-    public ResponseObject<TvDetails> getTvById(@PathVariable("tvId") String tvId) {
-        return ResponseObject.getSuccessResponse(service.getTvDetailsById(tvId));
+    @GetMapping("/{imdbId}")
+    public ResponseObject<TvDetails> getTvById(@PathVariable("imdbId") String imdbId) {
+        return ResponseObject.getTvSuccessResponse(service.getTvDetailsByImdbId(imdbId));
     }
 
 
     @GetMapping("/genres")
     public ResponseObject<Metadata<List<TvDTO>>> getTvsByGenre(@RequestParam List<String> genres, Pageable pageable) {
         List<Genre> genreList=genres.stream().map(genreService::getGenreByName).collect(Collectors.toList());
-        return ResponseObject.getSuccessResponse(Metadata.<List<TvDTO>>builder()
+        return ResponseObject.getTvSuccessResponse(Metadata.<List<TvDTO>>builder()
                 .nextPage(LinkUtil.nextPageTvsByGenre(genres,pageable))
                 .movies(service.getTvsForHomepageByGenres(genreList,pageable))
                 .build());
@@ -51,16 +51,16 @@ public class TvController {
 
     @GetMapping("/similar/{tvId}")
     public ResponseObject<?> getSimilarTvs(@PathVariable("tvId") String movieId,Pageable pageable) {
-        return ResponseObject.getSuccessResponse(service.getSimilarTvs(movieId,pageable));
+        return ResponseObject.getTvSuccessResponse(service.getSimilarTvs(movieId,pageable));
     }
 
     @GetMapping("/search")
     public ResponseObject<List<MovieDTO>> search(@RequestParam("q") String q) {
-        return ResponseObject.getSuccessResponse(service.searchByTitle(q));
+       return null;
     }
 
     @PostMapping
-    public void AddMovie(@RequestBody Tv tv) {
+    public void adTv(@RequestBody Tv tv) {
         service.addTv(tv);
     }
 

@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface SubtitleRepo extends JpaRepository<Subtitle,Integer> {
 
-    List<SubtitleProjection> findAllByMovieId(String movieId);
+    List<SubtitleProjection> findAllByMovie_ImdbId(String movieId);
 }

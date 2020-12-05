@@ -27,7 +27,7 @@ public class MovieController {
     @GetMapping
     public ResponseObject<Metadata<List<MovieDTO>>> getMovies(Pageable pageable) {
         List<MovieDTO> movieDTOS = movieService.getMoviesForHomepage(pageable);
-        return ResponseObject.getSuccessResponse(Metadata.<List<MovieDTO>>builder()
+        return ResponseObject.getMovieSuccessResponse(Metadata.<List<MovieDTO>>builder()
                 .movies(movieDTOS)
                 .nextPage(LinkUtil.nextPageForMovies(pageable))
                 .build());
@@ -35,14 +35,14 @@ public class MovieController {
 
     @GetMapping("/{movieId}")
     public ResponseObject<MovieDetails> getMovieById(@PathVariable("movieId") String movieId) {
-        return ResponseObject.getSuccessResponse(movieService.getMovieById(movieId));
+        return ResponseObject.getMovieSuccessResponse(movieService.getMovieById(movieId));
     }
 
 
     @GetMapping("/genres")
     public ResponseObject<Metadata<List<MovieDTO>>> getMoviesByGenre(@RequestParam List<String> genres,Pageable pageable) {
         List<Genre> genreList=genres.stream().map(genreService::getGenreByName).collect(Collectors.toList());
-        return ResponseObject.getSuccessResponse(Metadata.<List<MovieDTO>>builder()
+        return ResponseObject.getMovieSuccessResponse(Metadata.<List<MovieDTO>>builder()
                 .nextPage(LinkUtil.nextPageMoviesByGenre(genres,pageable))
                 .movies(movieService.getMoviesForHomepageByGenres(genreList,pageable))
                 .build());
@@ -50,17 +50,17 @@ public class MovieController {
 
     @GetMapping("/similar/{movieId}")
     public ResponseObject<?> getSimilarMovies(@PathVariable("movieId") String movieId,Pageable pageable) {
-        return ResponseObject.getSuccessResponse(movieService.getSimilarMovies(movieId,pageable));
+        return ResponseObject.getMovieSuccessResponse(movieService.getSimilarMovies(movieId,pageable));
     }
 
     @GetMapping("/search")
     public ResponseObject<Metadata<List<MovieDTO>>> searchMovies(@RequestParam("q") String q,Pageable pageable) {
-        return ResponseObject.getSuccessResponse(movieService.searchByTitle(q,pageable));
+        return ResponseObject.getMovieSuccessResponse(movieService.searchByTitle(q,pageable));
     }
 
     @GetMapping("/lang/{language}")
     public ResponseObject<?> getMoviesByLanguage(@PathVariable String language,Pageable pageable) {
-        return ResponseObject.getSuccessResponse(Metadata.<List<MovieDTO>>builder()
+        return ResponseObject.getMovieSuccessResponse(Metadata.<List<MovieDTO>>builder()
                 .nextPage(LinkUtil.nextPageMoviesByLang(language,pageable))
                 .movies(movieService.getMoviesByLanguage(language,pageable))
                 .build());

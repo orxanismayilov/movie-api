@@ -23,14 +23,22 @@ public interface MovieRepo extends JpaRepository<Movie, String> {
     List<MovieProjection> findDistinctByGenres_Id(Integer genres_id,Pageable pageable);
 
     @Query(value = "SELECT m.*\n" +
-            "            FROM movie m,movie_keyword mk, keyword k\n" +
-            "            WHERE mk.keyword_id = k.id\n" +
-            "            AND (k.name IN :keywords)\n" +
-            "            AND m.imdb_id = mk.movie_id\n" +
-            "            GROUP BY m.imdb_id",nativeQuery = true)
-    List<Movie> findDistinctByKeywordsIn(@Param("keywords") Collection<String> keywords, Pageable pageable);
+            "FROM movie m\n" +
+            "JOIN (\n" +
+            "        SELECT m.imdb_id, COUNT(*) AS cat_frequency\n" +
+            "        FROM movie m\n" +
+            "        JOIN movie_keyword mc ON m.imdb_id = mc.movie_id\n" +
+            "        WHERE mc.keyword_id IN ( SELECT c.keyword_id\n" +
+            "                                  FROM movie_keyword c\n" +
+            "                                  WHERE c.movie_id = :imdbId )\n" +
+            "        GROUP BY m.imdb_id\n" +
+            "     ) f\n" +
+            "  ON m.imdb_id = f.imdb_id\n" +
+            "WHERE m.imdb_id <> :imdbId\n" +
+            "ORDER BY f.cat_frequency DESC",nativeQuery = true)
+    List<Movie> findSimilarMoviesByMovieId(String imdbId, Pageable pageable);
 
-    List<MovieProjection> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+    List<MovieProjection> findDistinctByTitleContainingIgnoreCase(String title, Pageable pageable);
 
     List<MovieProjection> findDistinctByVideos_Language(String language,Pageable pageable);
 }

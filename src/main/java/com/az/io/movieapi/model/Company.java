@@ -17,6 +17,14 @@ public class Company {
     private int id;
     private String name;
 
-    @ManyToMany(mappedBy = "companies",cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "companies", cascade = CascadeType.ALL)
     private List<Movie> movies;
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.MERGE,
+                    CascadeType.DETACH
+            },
+            mappedBy = "companies")
+    private List<Tv> tvs;
 }

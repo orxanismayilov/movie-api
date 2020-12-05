@@ -22,7 +22,7 @@ public class TvVideo {
     private String videoPath;
     private boolean status;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.DETACH,CascadeType.MERGE})
     @JoinColumn(name = "episode_id")
     private Episode episode;
 }

@@ -18,24 +18,24 @@ public class CommentController {
 
     @GetMapping("/{movieId}")
     public ResponseObject<List<Comment>> getCommentsByMovieId(@PathVariable("movieId") String movieId) {
-        return ResponseObject.getSuccessResponse(commentService.getComments(movieId));
+        return ResponseObject.getMovieSuccessResponse(commentService.getComments(movieId));
     }
 
     @PostMapping("/{movieId}")
     public ResponseObject<?> addComment(@PathVariable("movieId") String movieId,@RequestBody Comment comment) {
         comment.setMovie(new Movie(movieId));
         commentService.addComment(comment);
-        return ResponseObject.getSuccessResponse(null);
+        return ResponseObject.getMovieSuccessResponse(null);
     }
 
     @DeleteMapping("/{commentId}")
     public ResponseObject<?> deleteComment(@PathVariable String commentId) {
         commentService.deleteComment(commentId);
-        return ResponseObject.getSuccessResponse(null);
+        return ResponseObject.getMovieSuccessResponse(null);
     }
 
     @PutMapping("/update")
     public ResponseObject<?> updateComment(@RequestBody Comment comment) {
-        return ResponseObject.getSuccessResponse(commentService.updateComment(comment));
+        return ResponseObject.getMovieSuccessResponse(commentService.updateComment(comment));
     }
 }

@@ -16,6 +16,8 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <spring-data-solr.verion>1.1.0.RELEASE</spring-data-solr.verion>
+        <mapstruct.version>1.3.0.Final</mapstruct.version>
     </properties>
 
     <dependencies>
@@ -42,6 +44,17 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-jdk8</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>${mapstruct.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -87,6 +87,7 @@ public class HomeServiceImpl implements HomeService {
 
     private Metadata<List<MovieDTO>> getMoviesBuLang(String lang) {
         Metadata<List<MovieDTO>> metadata=new Metadata<>();
+        metadata.setResponseType(0);
         metadata.setTitle(lang.equals("tr")?"Movies in Turkish":"Movies in Russian");
         metadata.setMovies(movieService.getMoviesByLanguage(lang,pageablePopular));
         metadata.setNextPage(LinkUtil.nextPageMoviesByLang(lang,pageablePopular));
@@ -109,6 +110,7 @@ public class HomeServiceImpl implements HomeService {
 
     private Metadata<List<MovieDTO>> getTrendingMovies() {
         Metadata<List<MovieDTO>> popularMovies = new Metadata<>();
+        popularMovies.setResponseType(0);
         popularMovies.setTitle("Trending movies");
         popularMovies.setNextPage(LinkUtil.nextPageForMovies(pageablePopular));
         popularMovies.setMovies(movieService.getMoviesForHomepage(pageablePopular));
@@ -117,6 +119,7 @@ public class HomeServiceImpl implements HomeService {
 
     private Metadata<List<MovieDTO>> getLatestMovies() {
         Metadata<List<MovieDTO>> latestMovies = new Metadata<>();
+        latestMovies.setResponseType(0);
         latestMovies.setTitle("Latest movies");
         latestMovies.setMovies(movieService.getMoviesForHomepage(pageableLatest));
         latestMovies.setNextPage(LinkUtil.nextPageForMovies(pageableLatest));
@@ -124,19 +127,21 @@ public class HomeServiceImpl implements HomeService {
     }
 
     private Metadata<List<TvDTO>> getTrendingTvs() {
-        Metadata<List<TvDTO>> popularMovies = new Metadata<>();
-        popularMovies.setTitle("Trending series");
-        popularMovies.setNextPage(LinkUtil.nextPageForTvs(pageablePopular));
-        popularMovies.setMovies(tvService.getTvsForHomepage(pageablePopular));
-        return popularMovies;
+        Metadata<List<TvDTO>> popularTvs = new Metadata<>();
+        popularTvs.setResponseType(1);
+        popularTvs.setTitle("Trending series");
+        popularTvs.setNextPage(LinkUtil.nextPageForTvs(pageablePopular));
+        popularTvs.setMovies(tvService.getTvsForHomepage(pageablePopular));
+        return popularTvs;
     }
 
     private Metadata<List<TvDTO>> getLatestTvs() {
-        Metadata<List<TvDTO>> latestMovies = new Metadata<>();
-        latestMovies.setTitle("Latest series");
-        latestMovies.setMovies(tvService.getTvsForHomepage(pageableLatest));
-        latestMovies.setNextPage(LinkUtil.nextPageForTvs(pageableLatest));
-        return latestMovies;
+        Metadata<List<TvDTO>> latestTvs = new Metadata<>();
+        latestTvs.setResponseType(1);
+        latestTvs.setTitle("Latest series");
+        latestTvs.setMovies(tvService.getTvsForHomepage(pageableLatest));
+        latestTvs.setNextPage(LinkUtil.nextPageForTvs(pageableLatest));
+        return latestTvs;
     }
 
     private Metadata<List<TvDTO>> getActionAndAdventureTvs() {
@@ -155,6 +160,7 @@ public class HomeServiceImpl implements HomeService {
 
     private Metadata<List<TvDTO>> getTvsByGenre(Genre genre) {
         Metadata<List<TvDTO>> tvs = new Metadata<>();
+        tvs.setResponseType(1);
         Pageable pageable=getGenrePageAble();
         tvs.setTitle(genre.getName()+" series");
         tvs.setMovies(tvService.getTvByGenre(genre, pageable));
@@ -164,17 +170,19 @@ public class HomeServiceImpl implements HomeService {
     }
 
     private Metadata<List<TvDTO>> getTvsByMultipleGenres(List<Genre> genres,String title) {
-        Metadata<List<TvDTO>> movies = new Metadata<>();
-        movies.setTitle(title);
+        Metadata<List<TvDTO>> tvs = new Metadata<>();
+        tvs.setResponseType(1);
+        tvs.setTitle(title);
         Pageable pageable=getGenrePageAble();
-        movies.setMovies(tvService.getTvsForHomepageByGenres(genres, pageable));
-        movies.setNextPage(LinkUtil.nextPageTvsByGenre(
+        tvs.setMovies(tvService.getTvsForHomepageByGenres(genres, pageable));
+        tvs.setNextPage(LinkUtil.nextPageTvsByGenre(
                 getGenreNames(genres),pageable));
-        return movies;
+        return tvs;
     }
 
     private Metadata<List<MovieDTO>> getMoviesByGenre(Genre genre) {
         Metadata<List<MovieDTO>> movies = new Metadata<>();
+        movies.setResponseType(0);
         Pageable pageable=getGenrePageAble();
         movies.setTitle(genre.getName()+" movies");
         movies.setMovies(movieService.getMoviesByGenre(genre, pageable));
@@ -185,6 +193,7 @@ public class HomeServiceImpl implements HomeService {
 
     private Metadata<List<MovieDTO>> getMoviesByMultipleGenres(List<Genre> genres,String title) {
         Metadata<List<MovieDTO>> movies = new Metadata<>();
+        movies.setResponseType(0);
         movies.setTitle(title);
         Pageable pageable=getGenrePageAble();
         movies.setMovies(movieService.getMoviesForHomepageByGenres(genres, pageable));

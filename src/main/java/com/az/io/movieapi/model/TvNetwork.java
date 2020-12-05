@@ -5,30 +5,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Entity
+@Table(name = "network")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Crew {
-    @Id
-    @GeneratedValue
-    private int id;
-    private String department;
-    private String job;
-    private String name;
-    private String profilePath;
+public class TvNetwork {
 
-    @ManyToMany(mappedBy = "crew")
-    private List<Movie> movie;
+    @Id
+    private long id;
+    private String name;
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
                     CascadeType.MERGE,
                     CascadeType.DETACH
             },
-            mappedBy = "crew")
-    private Set<Tv> tvs;
+            mappedBy = "networks")
+    private Set<Tv> tv;
 }

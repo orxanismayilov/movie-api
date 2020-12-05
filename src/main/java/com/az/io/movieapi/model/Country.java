@@ -19,4 +19,12 @@ public class Country {
 
     @ManyToMany(mappedBy = "countries",cascade = CascadeType.ALL)
     private List<Movie> movies;
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.MERGE,
+                    CascadeType.DETACH
+            },
+            mappedBy = "countries")
+    private List<Tv> tvs;
 }

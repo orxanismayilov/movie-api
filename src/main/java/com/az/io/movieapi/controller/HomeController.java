@@ -22,12 +22,12 @@ public class HomeController {
     @GetMapping
     public ResponseObject<List<Metadata<List<MovieDTO>>>> getHomePage(){
         List<Metadata<List<MovieDTO>>> homePage=homeService.getMovieHomePage();
-        return ResponseObject.getSuccessResponse(homePage);
+        return ResponseObject.getMovieSuccessResponse(homePage);
     }
 
     @GetMapping("/tv")
     public ResponseObject<List<Metadata<List<TvDTO>>>> getTvHomePage(){
-        return ResponseObject.getSuccessResponse(homeService.getTvHomePage());
+        return ResponseObject.getMovieSuccessResponse(homeService.getTvHomePage());
     }
 
     @GetMapping("/reset")

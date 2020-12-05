@@ -7,19 +7,18 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "subtitle")
+@Table(name = "tv_subtitle")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Subtitle {
+public class TvSubtitle {
 
     @Id
-    @GeneratedValue
-    private int id;
+    private String id;
     private String language;
     private String path;
 
     @ManyToOne(fetch = FetchType.EAGER,cascade = {CascadeType.PERSIST,CascadeType.MERGE})
-    @JoinColumn(name = "movie_id")
-    private Movie movie;
+    @JoinColumn(name = "episode_id")
+    private Episode episode;
 }

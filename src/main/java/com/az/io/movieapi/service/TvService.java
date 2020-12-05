@@ -14,9 +14,7 @@ public interface TvService {
 
     Tv getTvEntityById(String tvId);
 
-    TvDetails getTvDetailsById(String tvId);
-
-    List<MovieDTO> searchByTitle(String name);
+    TvDetails getTvDetailsByImdbId(String tvId);
 
     void addTv(Tv tv);
 
